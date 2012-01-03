@@ -1,0 +1,3 @@
+Obeydale.wav	You will obey the Daleks or you will be exterminated!
+Uwilbext.wav	You will be exterminated!
+xterm01.wav	Exterminate! Annihilate! Destroy!

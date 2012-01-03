@@ -1,0 +1,37 @@
+FCC: mailbox://nobody@Local%20Folders/Sent
+X-Identity-Key: id1
+X-Account-Key: account1
+Date: Thu, 28 Apr 2005 11:34:12 +0200
+From: Anthony Howe <achowe@snert.com>
+Organization: Snert
+X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; uuencode=0
+User-Agent: Mozilla Thunderbird 1.0.2 (Windows/20050317)
+X-Accept-Language: en-us, en
+MIME-Version: 1.0
+Subject: eicar anti-virus test
+Content-Type: multipart/mixed;
+ boundary="------------070300010208080403070501"
+
+This is a multi-part message in MIME format.
+--------------070300010208080403070501
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+-- 
+Anthony C Howe                                 +33 6 11 89 73 78
+http://www.snert.com/       ICQ: 7116561         AIM: Sir Wumpus
+
+"held in my arms / his sun washed face / eyes closed" - Anthony
+
+--------------070300010208080403070501
+Content-Type: text/plain;
+ name="eicar.com"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename="eicar.com"
+
+wDVPIVAlQEFQWzRcUFpYNTQoUF4pN0NDKTd9JEVJQ0FSLVNUQU5EQVJELUFOVElWSVJVUy1U
+RVNULUZJTEUhJEgrSCo=
+--------------070300010208080403070501--
+

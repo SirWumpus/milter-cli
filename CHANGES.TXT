@@ -1,0 +1,208 @@
+CHANGES
+-------
+
+The major number changes for such things as code rewrites, changes in
+syntax, and/or dramatic changes in functionality. The minor number
+changes for corrections, enhancements, etc. made to the code. There
+is no set schedule for releases.
+
+--TODO--
+
+
+--0.17--
+
+   !	Minor changes for Buf API changes.
+
+   !	sample.mc.in: Removed from define(`_FFR_MILTER', `1')dnl
+
+--0.16--
+
+   !	Fixed possible off by one error for body chunks less than 20
+   	bytes. Reported by Ben Lentz.
+
+--0.15--
+
+  !!	Replaced use of buffered output from the milter to the CLI child
+	process with unbuffered I/O. Simplifies the code and avoids
+	possible I/O blocking when closing the milter to child stream.
+
+--0.14--
+
+   +	Requires LibSnert 1.63.
+
+   !	Restore verbose=info default so that script output is initally
+   	logged.
+
+   !	Fixed potential problem between mixed models by doing timeouts
+	on the file descriptor, but using buffered input.
+
+   !	It would appear you still have to call waitpid() after even a
+	SIGKILL (terminate with extreme prejudice).
+
+   !	cmdStart() asserts that no unnecessary file descriptors remain
+   	open in the child process, by closing everything other than
+   	standard in (0), out (1), and error (2).
+
+  !!	filterBody(): Fixed obsecure bug when the message content is
+	less than 20 bytes long, adding a terminating NUL to the body
+	chunk for the trace log output actually overwrote off the end
+	of a dynamic buffer on some Linux systems causing the milter
+	to crash. Reported by Martin Lathoud.
+
+   +	access-db now supports socket-map, flat-file, and SQLite3
+	lookups in addition to Berkeley DB. The SQLite3 behaviour
+	can be disabled via LibSnert's ./configure script.
+
+   !	Removed DEFAULT_COMMAND /bin/true in favour of NULL.
+
+--0.13--
+
+  !!	License 1.4 which provides additional details with regards to
+  	possible license controls used, the possibility of "phone
+  	home code" and its general contents, and related privacy
+  	statement.
+
+   +	Add check for filterOpen() got NULL socket address pointer
+	passed to filterOpen() which inidicates an unsupported address
+	type. The connection is simply accepted to bypass the milter.
+
+--0.12--
+
+   +	Requires LibSnert 1.61.
+
+  !!	Complete replacement of option specification and no backwards.
+	compatibility. The newer format allows for better integration
+	of previously undocumented libsnert options and for the
+	inclusion of future enhancements.
+
+   !	filterClose(): remove reporting of "null workspace error",
+	which can occur when a client connection is rejected before or
+	by filterOpen().
+
+   !	Minor corrections for gcc -Wall warnings and errors.
+
+--0.11--
+
+   !	Reverted back to libmilter's default (7210s) timeout. This
+	should silence many of the reported sendmail to milter timeout
+	errors and/or broken connections caused by the milter timing
+	out sooner than sendmail does with the current SMTP client.
+	The sendmail defaults for each SMTP command and receiving the
+	message content is 1h each and so libmilter allows for 2h 10s.
+	But in theory you could be DoS for between 5 and 104 hours per
+	connection. If you want to change this then set in
+	sendmail.mc:
+
+		define(`confTO_DATABLOCK',      `30m')
+		define(`confTO_COMMAND',        `5m')
+
+--0.10--
+
+   !	Increased recommended EOM timeout for INPUT_MAIL_FILTER().
+
+--0.9--
+
+   +	Requires LibSnert 1.57
+
+   !	When the -e command returns DISCARD, TAG, BCC, or REDIRECT,
+   	then skip executing the -c command as documented. Reported
+   	by Sergey N. Romanov.
+
+   !	Add -H option to enable adding of X-Scanned-By headers. This
+   	changes the default behaviour to be disabled. Requested by
+   	Sergey N. Romanov.
+
+   !	When an I/O error occurs, ie. broken pipe, then we should
+   	still collect the child process status, otherwise zombie
+   	processess ensue. Reported by Sergey N. Romanov.
+
+   +	Added support for
+
+   		milter-length-auth:auth_authen	RHS
+   		milter-length-auth:
+
+--0.8--
+
+   +	Requires LibSnert 1.56
+
+   !	Changed install.sh.in to create /var/run/mitler/ directory
+   	owned by milter:milter and change the default PID_FILE and
+   	SOCKET_FILE paths. This provides better privelage/security
+   	separation since the milters run as milter:milter.
+
+   +	More dialog debugging added to cmdStop() and filterData() for -e.
+
+--0.7--
+
+   +	Requires LibSnert 1.53
+
+   !	filterRcpt() minor change to account for LibSnert smfAccessRcpt()
+   	change to keep the old skipMessage behaviour until ready.
+
+   !	cmdStart() now does setuid() to effective user-id before invoking
+   	any command line script or command.
+
+--0.6--
+
+   +	After invoking the -e or -c commands, write the sendmail
+   	message ID to the command's standard input along with
+   	the other parameters. Useful for creating temporary file
+   	names or logging by the script.
+
+   	NOTE that this change will require changes to scripts and
+	programs called by milter-cli. See manual.shtml for order.
+
+--0.5--
+
+   +	Modify filterRcpt() so as to be sure all recipients, except
+   	those blacklisted, are added to the recipients list passed
+   	to the -e CLI.
+
+   +	The CLI return codes for copy (5) and redirect (6) now allow
+   	for both recipients addresses and an X-Milter-CLI-Report header.
+   	Report lines can be interleaved with recipients on standard
+   	output from the CLI, provided the report lines contain a space
+   	character.
+
+--0.4--
+
+   !	Fixed potential file descriptor leak.
+
+   !	Fixed potential zombie child processes.
+
+--0.3--
+
+   +	filterEndMessage(): now tests skipMessage (white list) flag,
+	rather relying on cmdStop() to detect that no child process
+	was started. This also means that the addition of the X-
+	Scanned-By header is skipped. For local outbound messages,
+	this should improve performance, in particular for any local
+	mailing lists.
+
+   !	Fixed hasInput() when using poll(): changed POLLHUP condition
+	to return EPIPE only once all input has been exhausted.
+
+--0.2--
+
+   +	Requires LibSnert 1.41 build 716+.
+
+   +	Added the -e envelope command. Is only available IF sendmail
+	and libmilter were built with -DSMFI_VERSION=4 or better. The
+	envelope command has priority to tempfail, reject, or discard
+	the message. Otherwise the content command will have a chance.
+	It is possible to double-tag or have mixed copy/redirect
+	results from both commands.
+
+   +	Added support for multiple instances.
+
+   +	More AWK examples.
+
+   !	Fixed multiple broken pipe errors for large messages, because
+   	a script terminated early and was no longer accepting input.
+
+--0.1--
+
+   +	Requires LibSnert 1.41 build 713+
+
+
+
