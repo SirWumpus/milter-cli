@@ -105,8 +105,8 @@
 #include <com/snert/lib/util/getopt.h>
 #include <com/snert/lib/util/Token.h>
 
-#if LIBSNERT_MAJOR < 1 || LIBSNERT_MINOR < 70
-# error "LibSnert/1.70 or better is required"
+#if LIBSNERT_MAJOR < 1 || LIBSNERT_MINOR < 75
+# error "LibSnert 1.75.8 or better is required"
 #endif
 
 #ifndef HAVE_SMFI_SETMLREPLY
