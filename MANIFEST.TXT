@@ -34,7 +34,6 @@ com/snert/src/milter-cli/mailto.js
 com/snert/src/milter-cli/makefile.in
 com/snert/src/milter-cli/manual.shtml
 com/snert/src/milter-cli/manual.shtml.in
-com/snert/src/milter-cli/milter-cgi.tws
 com/snert/src/milter-cli/milter-cli.c
 com/snert/src/milter-cli/rc.milters
 com/snert/src/milter-cli/sample.mc.in

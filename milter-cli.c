@@ -855,7 +855,7 @@ filterBody(SMFICTX *ctx, unsigned char *chunk, size_t size)
 		return SMFIS_CONTINUE;
 
 	if (size == 0)
-		chunk = "";
+		chunk = (unsigned char *)"";
 	else if (size < 20)
 		chunk[--size] = '\0';
 
@@ -880,7 +880,7 @@ filterBody(SMFICTX *ctx, unsigned char *chunk, size_t size)
 	smfLog(SMF_LOG_DIALOG, TAG_FORMAT "> %.20s...", TAG_ARGS, chunk);
 
 	if (data->child != NO_CHILD)
-		(void) cmdWritePipe(data, chunk, size);
+		(void) cmdWritePipe(data, (const char *)chunk, size);
 
 	return SMFIS_CONTINUE;
 }
@@ -983,7 +983,7 @@ syslog(LOG_DEBUG, TAG_FORMAT "report-line='%s'", TAG_ARGS, report);
 		BufSetLength(header, BufLength(header)-3);
 
 		/* Add or replace the report header. */
-		(void) smfHeaderSet(data->work.ctx, x_milter_report, BufBytes(header), 1, data->hasReport);
+		(void) smfHeaderSet(data->work.ctx, x_milter_report, (char *) BufBytes(header), 1, data->hasReport);
 		BufDestroy(header);
 	}
 
