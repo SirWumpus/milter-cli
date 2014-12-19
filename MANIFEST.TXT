@@ -24,6 +24,7 @@ com/snert/src/milter-cli/examples/redirect-content.awk
 com/snert/src/milter-cli/examples/spam.awk
 com/snert/src/milter-cli/examples/tags.awk
 com/snert/src/milter-cli/FILE.TXT
+com/snert/src/milter-cli/Img/swiss_army_knife.jpg
 com/snert/src/milter-cli/Img/logo-300x74.png
 com/snert/src/milter-cli/Img/mrpixel.gif
 com/snert/src/milter-cli/install.sh.in
