@@ -6,13 +6,13 @@
 #	Thus it begins...
 #######################################################################
 
-AC_INIT(milter-cli, 0.18, [Anthony Howe <achowe@snert.com>])
+AC_INIT(milter-cli, 0.19, [Anthony Howe <achowe@snert.com>])
 
 dnl The autoconf version I learned to deal with.
 AC_PREREQ(2.59)
 
 dnl Yes I wrote this mess.
-SNERT_INIT(MILTER, [Copyright 2005, 2012 by Anthony Howe. All rights reserved.])
+SNERT_INIT(MILTER, [Copyright 2005, 2019 by Anthony Howe. All rights reserved.])
 
 AC_SUBST(snert_milter_t_equate, 'C:10s;S:10s;R:2m;E:5m')
 
@@ -88,6 +88,7 @@ if test -f '../lib/version.sh' ; then
 
 	AC_SUBST(HAVE_LIB_RT)
 	AC_SUBST(HAVE_LIB_SEM)
+	AC_SUBST(NETWORK_LIBS)
 
 	AC_SUBST(CFLAGS_DB)
 	AC_SUBST(LDFLAGS_DB)
@@ -99,7 +100,7 @@ if test -f '../lib/version.sh' ; then
 
 	AC_SUBST(CFLAGS_SQLITE3)
 	AC_SUBST(LDFLAGS_SQLITE3)
-	AC_SUBST(HAVE_LIB_SQLITE3)
+	AC_SUBST(LIBS_SQLITE3)
 
 	AC_SUBST(CFLAGS_PTHREAD)
 	AC_SUBST(LDFLAGS_PTHREAD)
