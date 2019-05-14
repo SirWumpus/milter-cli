@@ -62,13 +62,14 @@
 /* Re-assert this macro just in case. May cause a compiler warning. */
 #define _REENTRANT	1
 
+#include <com/snert/lib/version.h>
+
 #include <sys/types.h>
 #include <pwd.h>
 #include <grp.h>
 #include <ctype.h>
 #include <errno.h>
 #include <time.h>
-#include <signal.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,7 +81,10 @@
 #include <sys/wait.h>
 #include <sysexits.h>
 
-#include <com/snert/lib/version.h>
+#if defined(__sun__) && !defined(_POSIX_PTHREAD_SEMANTICS)
+# define _POSIX_PTHREAD_SEMANTICS
+#endif
+#include <signal.h>
 
 #ifdef HAVE_FCNTL_H
 # include <fcntl.h>
@@ -95,6 +99,16 @@
 # endif
 #endif
 
+#if LIBSNERT_MAJOR < 1 || LIBSNERT_MINOR < 75
+# error "LibSnert 1.75.8 or better is required"
+#endif
+
+#ifndef HAVE_SMFI_SETMLREPLY
+# error "smfi_setmlreply() is missing. Please install a newer version of libmilter from sendmail 8.13 or better."
+#endif
+
+# define MILTER_STRING	MILTER_NAME"/"MILTER_VERSION
+
 #include <com/snert/lib/sys/Time.h>
 #include <com/snert/lib/mail/limits.h>
 #include <com/snert/lib/mail/smf.h>
@@ -104,20 +118,6 @@
 #include <com/snert/lib/util/Text.h>
 #include <com/snert/lib/util/getopt.h>
 #include <com/snert/lib/util/Token.h>
-
-#if LIBSNERT_MAJOR < 1 || LIBSNERT_MINOR < 75
-# error "LibSnert 1.75.8 or better is required"
-#endif
-
-#ifndef HAVE_SMFI_SETMLREPLY
-# error "smfi_setmlreply() is missing. Please install a newer version of libmilter from sendmail 8.13 or better."
-#endif
-
-#ifdef MILTER_BUILD_STRING
-# define MILTER_STRING	MILTER_NAME "/" MILTER_VERSION "." MILTER_BUILD_STRING
-#else
-# define MILTER_STRING	MILTER_NAME "/" MILTER_VERSION
-#endif
 
 /***********************************************************************
  *** Constants
@@ -208,6 +208,16 @@ static Option optMilterId	= { "milter-id",	"",	"A milter instance ID string." };
 static Option optAddHeaders	= { "add-headers",	"-",	"Add extra informational headers when message passes." };
 #endif
 
+Option opt_version		= { "version",			NULL,		"Show version and copyright." };
+
+static const char usage_info[] =
+  "Write the configuration and compile time options to standard output\n"
+"# and exit.\n"
+"#"
+;
+Option opt_info			= { "info", 			NULL,		usage_info };
+
+
 static Option *optTable[] = {
 	&optIntro,
 #ifdef DROPPED_ADD_HEADERS
@@ -217,7 +227,9 @@ static Option *optTable[] = {
 	&optContentMaxSize,
 	&optEnvelopeFilter,
 	&optFilterTimeout,
+	&opt_info,
 	&optMilterId,
+	&opt_version,
 	NULL
 };
 
@@ -1239,6 +1251,57 @@ initInstance(void)
 	return rc;
 }
 
+void
+printVersion(void)
+{
+	printf(MILTER_NAME " " MILTER_VERSION " " MILTER_COPYRIGHT "\n");
+	printf("LibSnert %s %s", LIBSNERT_VERSION, LIBSNERT_COPYRIGHT "\n");
+#ifdef _BUILT
+	printf("Built on " _BUILT "\n");
+#endif
+}
+
+void
+printInfo(void)
+{
+#ifdef MILTER_NAME
+	printVar(0, "MILTER_NAME", MILTER_NAME);
+#endif
+#ifdef MILTER_VERSION
+	printVar(0, "MILTER_VERSION", MILTER_VERSION);
+#endif
+#ifdef MILTER_COPYRIGHT
+	printVar(0, "MILTER_COPYRIGHT", MILTER_COPYRIGHT);
+#endif
+#ifdef MILTER_CONFIGURE
+	printVar(LINE_WRAP, "MILTER_CONFIGURE", MILTER_CONFIGURE);
+#endif
+#ifdef _BUILT
+	printVar(0, "MILTER_BUILT", _BUILT);
+#endif
+#ifdef LIBSNERT_VERSION
+	printVar(0, "LIBSNERT_VERSION", LIBSNERT_VERSION);
+#endif
+#ifdef LIBSNERT_BUILD_HOST
+	printVar(LINE_WRAP, "LIBSNERT_BUILD_HOST", LIBSNERT_BUILD_HOST);
+#endif
+#ifdef LIBSNERT_CONFIGURE
+	printVar(LINE_WRAP, "LIBSNERT_CONFIGURE", LIBSNERT_CONFIGURE);
+#endif
+#ifdef SQLITE_VERSION
+	printVar(0, "SQLITE3_VERSION", SQLITE_VERSION);
+#endif
+#ifdef MILTER_CFLAGS
+	printVar(LINE_WRAP, "CFLAGS", MILTER_CFLAGS);
+#endif
+#ifdef MILTER_LDFLAGS
+	printVar(LINE_WRAP, "LDFLAGS", MILTER_LDFLAGS);
+#endif
+#ifdef MILTER_LIBS
+	printVar(LINE_WRAP, "LIBS", MILTER_LIBS);
+#endif
+}
+
 int
 main(int argc, char **argv)
 {
@@ -1270,7 +1333,14 @@ main(int argc, char **argv)
 		(void) optionArrayL(argc, argv, optTable, smfOptTable, NULL);
 	}
 
-	/* Show them the funny farm. */
+	if (opt_version.string != NULL) {
+		printVersion();
+		exit(EX_USAGE);
+	}
+	if (opt_info.string != NULL) {
+		printInfo();
+		exit(EX_USAGE);
+	}
 	if (smfOptHelp.string != NULL) {
 		optionUsageL(optTable, smfOptTable, NULL);
 		exit(2);

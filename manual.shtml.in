@@ -585,6 +585,13 @@ To disable the use of an option file, simply say <span class="syntax">file=''</s
 The output is suitable for use as an option file.
 </dd>
 
+<a name="opt_info"></a>
+<dt><span class="syntax">&plusmn;info</span></dt>
+<dd>
+Write the configuration and compile time options to standard output
+and exit.
+</dd>
+
 <a name="opt_milter_id"></a>
 <dt><span class="syntax">mitler-id=</span><span class="param"></span></dt>
 <dd>Specify a milter instance ID string. This allows multiple instances of the milter
@@ -618,13 +625,13 @@ the INPUT_MAIL_FILTER() macro in the sendmail.mc file. The accepted syntax is:
 </dd>
 
 <a name="opt_quit"></a>
-<dt><span class="syntax">-quit</span> or <span class="syntax">+quit</span></dt>
+<dt><span class="syntax">&plusmn;quit</span></dt>
 <dd>Quit an already running instance of the milter and exit.
 This is equivalent to: <nobr><code>kill -QUIT `cat /var/run/milter/@PACKAGE_NAME@.pid`</code></nobr>
 </dd>
 
 <a name="opt_restart"></a>
-<dt><span class="syntax">-restart</span> or <span class="syntax">+restart</span></dt>
+<dt><span class="syntax">&plusmn;restart</span></dt>
 <dd>Terminate an already running instance of the milter before starting.
 </dd>
 
@@ -715,6 +722,11 @@ Those mark with <span class="syntax">&sect;</span> have meaning for this milter.
 </tr>
 </table>
 </blockquote>
+</dd>
+
+<a name="opt_version"></a>
+<dt><span class="syntax">&plusmn;version</span></dt>
+<dd>Show version and copyright.
 </dd>
 
 <a name="opt_work_dir"></a>
@@ -894,7 +906,7 @@ The <code>@datadir@/examples/@PACKAGE_NAME@/</code> directory contains the follo
 		Rejects mail that appears to come from a dynamic address pool
 		based on a POSIX regex pattern:
 		<p>
-		<nobr>-e '@datadir@/examples/@PACKAGE_NAME@/env.awk'</nobr>
+		<nobr>envelope-filter='@datadir@/examples/@PACKAGE_NAME@/env.awk'</nobr>
 		</p>
 	</td>
 </tr>
@@ -904,7 +916,7 @@ The <code>@datadir@/examples/@PACKAGE_NAME@/</code> directory contains the follo
 		Tag mail that appears to come from a dynamic address pool
 		using a diffent scheme for identifying them:
 		<p>
-		<nobr>-e '@datadir@/examples/@PACKAGE_NAME@/ext.sh'</nobr>
+		<nobr>envelope-filter='@datadir@/examples/@PACKAGE_NAME@/env2.sh'</nobr>
 		</p>
 	</td>
 </tr>
@@ -913,7 +925,7 @@ The <code>@datadir@/examples/@PACKAGE_NAME@/</code> directory contains the follo
 	<td class="bline" width="90%">
 		Rejects mail contain attachments with Windows executable extensions:
 		<p>
-		<nobr>-c '@datadir@/examples/@PACKAGE_NAME@/ext.sh'</nobr>
+		<nobr>content-filter='@datadir@/examples/@PACKAGE_NAME@/ext.sh'</nobr>
 		</p>
 	</td>
 </tr>
@@ -924,7 +936,7 @@ The <code>@datadir@/examples/@PACKAGE_NAME@/</code> directory contains the follo
 		with the file name and a multiline reply. Reject anti-virus notices.
 		Also redirect mail with .zip or .rar extensions to a spam box:
 		<p>
-		<nobr>-c '/usr/bin/awk -f @datadir@/examples/@PACKAGE_NAME@/ext.awk'</nobr>
+		<nobr>content-filter='/usr/bin/awk -f @datadir@/examples/@PACKAGE_NAME@/ext.awk'</nobr>
 		</p>
 	</td>
 </tr>
@@ -934,7 +946,7 @@ The <code>@datadir@/examples/@PACKAGE_NAME@/</code> directory contains the follo
 		Another AWK example that rejects mail containing an IFRAME with inline content
 		and tracking bugs. Also tags subjects lines of messages using inline style sheets:
 		<p>
-		<nobr>-c '/usr/bin/awk -f @datadir@/examples/@PACKAGE_NAME@/tags.awk'</nobr>
+		<nobr>content-filter='/usr/bin/awk -f @datadir@/examples/@PACKAGE_NAME@/tags.awk'</nobr>
 		</p>
 	</td>
 </tr>
