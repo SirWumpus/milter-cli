@@ -9,7 +9,7 @@ is no set schedule for releases.
 --TODO--
 
 
---0.18.1--
+--0.18.2--
 
    *	Requires LibSnert 1.75.58
 
